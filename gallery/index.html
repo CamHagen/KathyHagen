@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kathy Hagen — Watercolors &amp; Paintings</title>
+<meta name="description" content="A gallery of original watercolors and paintings by Kathy Hagen." />
+
+<!--
+  ═══════════════════════════════════════════════════════════════════
+  SETUP — read this before you push
+  ═══════════════════════════════════════════════════════════════════
+  1. This page lives at:  kathyhagen.com/gallery/index.html
+  2. It expects your artwork images inside a sibling folder:
+       /gallery/images/
+     (i.e. same repo, "images" folder next to this index.html)
+  3. Put ANY .jpg / .jpeg / .png / .webp / .gif file in that folder —
+     no renaming, no manifest, no build step. The page asks GitHub's
+     API "what's in that folder right now" every time it loads.
+  4. Update the three constants below (GH_OWNER / GH_REPO / GH_BRANCH)
+     to match your actual GitHub repo if they differ.
+  5. Note: GitHub's public API allows 60 anonymous requests/hour per
+     visitor IP. Fine for a personal/family site's traffic. If it's
+     ever an issue, the fix is a small pre-built JSON manifest instead
+     — ask Claude if you want that swapped in later.
+  ═══════════════════════════════════════════════════════════════════
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Source+Serif+4:ital,wght@0,400;0,500;1,400&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --paper: #F5EEE1;
+    --paper-deep: #EDE3D0;
+    --ink: #2A2622;
+    --ink-soft: #5B5449;
+    --sage: #7C9473;
+    --clay: #B96B4C;
+    --plum: #8A5A6E;
+    --teal: #3E6C72;
+    --line: rgba(42,38,34,0.12);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* subtle paper grain */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.5;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(0,0,0,0.015) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(0,0,0,0.02) 0%, transparent 40%);
+  }
+
+  a { color: inherit; }
+
+  .u-sans {
+    font-family: 'Work Sans', sans-serif;
+    letter-spacing: 0.04em;
+  }
+
+  /* ───────────── Header / nav ───────────── */
+
+  header {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px clamp(20px, 5vw, 56px);
+  }
+
+  .brand {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.15rem;
+    text-decoration: none;
+  }
+
+  .back-link {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink-soft);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.25s ease, color 0.25s ease;
+  }
+  .back-link:hover { color: var(--ink); border-color: var(--ink); }
+
+  /* ───────────── Hero ───────────── */
+
+  .hero {
+    position: relative;
+    padding: 8vh clamp(20px, 6vw, 56px) 10vh;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  .hero-blooms {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    filter: blur(60px);
+    opacity: 0.55;
+  }
+  .bloom {
+    position: absolute;
+    border-radius: 50%;
+    mix-blend-mode: multiply;
+    animation: drift 22s ease-in-out infinite;
+  }
+  .bloom--1 { width: 38vw; height: 38vw; left: 6%; top: -8%; background: var(--sage); animation-delay: 0s; }
+  .bloom--2 { width: 30vw; height: 30vw; right: 8%; top: 10%; background: var(--clay); animation-delay: -7s; }
+  .bloom--3 { width: 26vw; height: 26vw; left: 32%; bottom: -14%; background: var(--teal); animation-delay: -14s; }
+
+  @keyframes drift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(3%, 4%) scale(1.08); }
+    66% { transform: translate(-4%, -2%) scale(0.94); }
+  }
+
+  .hero-inner { position: relative; z-index: 2; }
+
+  .eyebrow {
+    display: block;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(2.6rem, 7vw, 5rem);
+    line-height: 1.02;
+    margin: 0 0 20px;
+    letter-spacing: -0.01em;
+  }
+  h1 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--clay);
+  }
+
+  .hero-sub {
+    max-width: 46ch;
+    margin: 0 auto;
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+
+  /* ───────────── Gallery ───────────── */
+
+  .gallery-wrap {
+    position: relative;
+    z-index: 2;
+    padding: 0 clamp(16px, 4vw, 48px) 10vh;
+  }
+
+  .gallery-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    max-width: 1400px;
+    margin: 0 auto 28px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .gallery-meta h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.3rem;
+    margin: 0;
+  }
+  .gallery-count {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .masonry {
+    max-width: 1400px;
+    margin: 0 auto;
+    column-count: 1;
+    column-gap: 22px;
+  }
+  @media (min-width: 640px)  { .masonry { column-count: 2; } }
+  @media (min-width: 980px)  { .masonry { column-count: 3; } }
+  @media (min-width: 1320px) { .masonry { column-count: 4; } }
+
+  .piece {
+    break-inside: avoid;
+    margin: 0 0 22px;
+    position: relative;
+    cursor: zoom-in;
+    border-radius: 3px;
+    overflow: hidden;
+    background: var(--paper-deep);
+    box-shadow: 0 1px 2px rgba(42,38,34,0.06);
+  }
+
+  .piece img {
+    display: block;
+    width: 100%;
+    height: auto;
+    opacity: 0;
+    transform: scale(1.04);
+    transition: opacity 0.7s ease, transform 1.1s cubic-bezier(0.16,1,0.3,1);
+  }
+  .piece.is-visible img {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* pigment bloom mask */
+  .piece::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    border-radius: 50%;
+    transform: scale(0);
+    opacity: 0.9;
+    transition: transform 0.9s cubic-bezier(0.16,1,0.3,1), opacity 0.9s ease 0.35s;
+  }
+  .piece.bloom-sage::after { background: var(--sage); }
+  .piece.bloom-clay::after { background: var(--clay); }
+  .piece.bloom-plum::after { background: var(--plum); }
+  .piece.bloom-teal::after { background: var(--teal); }
+  .piece.is-visible::after {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+
+  .piece-cap {
+    padding: 10px 4px 4px;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.76rem;
+    letter-spacing: 0.03em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bloom { animation: none; }
+    .piece img { transition: opacity 0.3s ease; transform: none !important; }
+    .piece::after { transition: none; transform: scale(0) !important; opacity: 0 !important; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* states */
+  .state-msg {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 4px;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+  .state-msg a { text-decoration: underline; }
+
+  /* ───────────── Lightbox ───────────── */
+
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(24,21,18,0.94);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    padding: 5vh 4vw;
+  }
+  .lightbox.is-open { opacity: 1; pointer-events: auto; }
+
+  .lightbox img {
+    max-width: 100%;
+    max-height: 82vh;
+    object-fit: contain;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    border-radius: 2px;
+  }
+
+  .lightbox-cap {
+    position: absolute;
+    bottom: 5vh;
+    left: 0; right: 0;
+    text-align: center;
+    color: #EDE6D8;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .lightbox button {
+    position: absolute;
+    background: none;
+    border: none;
+    color: #EDE6D8;
+    cursor: pointer;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    padding: 10px;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+  }
+  .lightbox button:hover { opacity: 1; }
+  .lightbox button:focus-visible { outline: 1px solid #EDE6D8; outline-offset: 2px; }
+
+  .lb-close { top: 18px; right: clamp(16px, 4vw, 40px); font-size: 1.6rem; line-height: 1; }
+  .lb-prev { left: clamp(4px, 2vw, 24px); top: 50%; transform: translateY(-50%); font-size: 2rem; }
+  .lb-next { right: clamp(4px, 2vw, 24px); top: 50%; transform: translateY(-50%); font-size: 2rem; }
+
+  footer {
+    text-align: center;
+    padding: 40px 20px 56px;
+    color: var(--ink-soft);
+    font-size: 0.78rem;
+    font-family: 'Work Sans', sans-serif;
+    letter-spacing: 0.03em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="brand" href="../index.html">Kathy Hagen</a>
+  <a class="back-link" href="../index.html">← Back to site</a>
+</header>
+
+<section class="hero">
+  <div class="hero-blooms" aria-hidden="true">
+    <span class="bloom bloom--1"></span>
+    <span class="bloom bloom--2"></span>
+    <span class="bloom bloom--3"></span>
+  </div>
+  <div class="hero-inner">
+    <span class="eyebrow u-sans">Original works</span>
+    <h1>Watercolors &amp; <em>paintings</em></h1>
+    <p class="hero-sub">A collection of original paintings, watercolors, and painted rocks — each piece made by hand, one wash at a time.</p>
+  </div>
+</section>
+
+<div class="gallery-wrap">
+  <div class="gallery-meta">
+    <h2>The collection</h2>
+    <span class="gallery-count u-sans" id="pieceCount"></span>
+  </div>
+  <div class="masonry" id="masonry" aria-live="polite"></div>
+</div>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged artwork">
+  <button class="lb-close" id="lbClose" aria-label="Close">&times;</button>
+  <button class="lb-prev" id="lbPrev" aria-label="Previous artwork">&#8249;</button>
+  <img id="lbImg" src="" alt="" />
+  <button class="lb-next" id="lbNext" aria-label="Next artwork">&#8250;</button>
+  <div class="lightbox-cap" id="lbCap"></div>
+</div>
+
+<footer>Kathy Hagen — original artwork</footer>
+
+<script>
+(function () {
+  // ── Configuration ──────────────────────────────────────────────
+  const GH_OWNER  = "CamHagen";
+  const GH_REPO   = "KathyHagen";
+  const GH_BRANCH = "main";
+  const GH_PATH   = "gallery/images";
+  // ────────────────────────────────────────────────────────────────
+
+  const IMAGE_EXT = /\.(jpe?g|png|webp|gif)$/i;
+  const BLOOM_CLASSES = ["bloom-sage", "bloom-clay", "bloom-plum", "bloom-teal"];
+
+  const masonry = document.getElementById("masonry");
+  const pieceCount = document.getElementById("pieceCount");
+
+  function prettify(filename) {
+    return filename
+      .replace(/\.[^/.]+$/, "")
+      .replace(/[-_]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .replace(/\b\w/g, c => c.toUpperCase());
+  }
+
+  function showMessage(html) {
+    masonry.innerHTML = "";
+    const div = document.createElement("div");
+    div.className = "state-msg";
+    div.innerHTML = html;
+    masonry.parentElement.insertBefore(div, masonry);
+    masonry.remove();
+  }
+
+  async function loadImages() {
+    const apiUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PATH}?ref=${GH_BRANCH}`;
+    let files;
+    try {
+      const res = await fetch(apiUrl, { headers: { "Accept": "application/vnd.github+json" } });
+      if (!res.ok) {
+        if (res.status === 404) {
+          showMessage(`No <code>${GH_PATH}</code> folder found yet in the repo. Add some images there and refresh.`);
+        } else if (res.status === 403) {
+          showMessage(`GitHub's API rate limit was hit for your connection. It resets in a bit — refresh in an hour, or ask Claude about switching to a manifest file.`);
+        } else {
+          showMessage(`Couldn't load the gallery right now (GitHub responded with ${res.status}). Try refreshing.`);
+        }
+        return;
+      }
+      files = await res.json();
+    } catch (err) {
+      showMessage(`Couldn't reach GitHub to load the gallery. Check your connection and refresh.`);
+      return;
+    }
+
+    const images = (Array.isArray(files) ? files : [])
+      .filter(f => f.type === "file" && IMAGE_EXT.test(f.name))
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    if (images.length === 0) {
+      showMessage(`The gallery folder is empty. Add images to <code>${GH_PATH}</code> and refresh.`);
+      return;
+    }
+
+    pieceCount.textContent = images.length + (images.length === 1 ? " piece" : " pieces");
+
+    images.forEach((file, i) => {
+      const bloomClass = BLOOM_CLASSES[i % BLOOM_CLASSES.length];
+      const fig = document.createElement("figure");
+      fig.className = `piece ${bloomClass}`;
+      fig.tabIndex = 0;
+      fig.setAttribute("role", "button");
+      fig.setAttribute("aria-label", `View ${prettify(file.name)} full size`);
+
+      const img = document.createElement("img");
+      img.src = file.download_url;
+      img.alt = prettify(file.name);
+      img.loading = "lazy";
+      img.dataset.index = i;
+
+      const cap = document.createElement("figcaption");
+      cap.className = "piece-cap";
+      cap.textContent = prettify(file.name);
+
+      fig.appendChild(img);
+      fig.appendChild(cap);
+      masonry.appendChild(fig);
+
+      const open = () => openLightbox(i);
+      fig.addEventListener("click", open);
+      fig.addEventListener("keydown", e => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); }
+      });
+    });
+
+    observePieces();
+    galleryImages = images;
+  }
+
+  // ── Scroll reveal (pigment bloom) ─────────────────────────────
+  function observePieces() {
+    const pieces = document.querySelectorAll(".piece");
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: "0px 0px -8% 0px" });
+    pieces.forEach(p => io.observe(p));
+  }
+
+  // ── Lightbox ────────────────────────────────────────────────────
+  let galleryImages = [];
+  let currentIndex = 0;
+  const lightbox = document.getElementById("lightbox");
+  const lbImg = document.getElementById("lbImg");
+  const lbCap = document.getElementById("lbCap");
+
+  function openLightbox(index) {
+    currentIndex = index;
+    updateLightbox();
+    lightbox.classList.add("is-open");
+    document.body.style.overflow = "hidden";
+    document.getElementById("lbClose").focus();
+  }
+  function closeLightbox() {
+    lightbox.classList.remove("is-open");
+    document.body.style.overflow = "";
+  }
+  function updateLightbox() {
+    const file = galleryImages[currentIndex];
+    lbImg.src = file.download_url;
+    lbImg.alt = prettify(file.name);
+    lbCap.textContent = prettify(file.name);
+  }
+  function nav(delta) {
+    currentIndex = (currentIndex + delta + galleryImages.length) % galleryImages.length;
+    updateLightbox();
+  }
+
+  document.getElementById("lbClose").addEventListener("click", closeLightbox);
+  document.getElementById("lbPrev").addEventListener("click", () => nav(-1));
+  document.getElementById("lbNext").addEventListener("click", () => nav(1));
+  lightbox.addEventListener("click", e => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener("keydown", e => {
+    if (!lightbox.classList.contains("is-open")) return;
+    if (e.key === "Escape") closeLightbox();
+    if (e.key === "ArrowLeft") nav(-1);
+    if (e.key === "ArrowRight") nav(1);
+  });
+
+  loadImages();
+})();
+</script>
+
+</body>
+</html>
